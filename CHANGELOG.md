@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [1.0.0.beta3] - 2023-08-12
+
+- Ensure attributes are processed on component node before it's rendered as component
+
+## [1.0.0.beta2] - 2023-08-12
+
+- Fix Bridgetown issues and process component "light DOM" children
+
 ## [1.0.0.beta1] - 2023-08-12
 
 - Major refactor as part of the new Heartml project

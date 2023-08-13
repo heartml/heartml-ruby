@@ -20,6 +20,8 @@ module Heartml
 
     def process(fragment = @fragment) # rubocop:disable Metrics
       traverse(fragment) do |node| # rubocop:disable Metrics/BlockLength
+        process_attribute_bindings(node)
+
         component = Heartml.registered_elements.find { _1.tag_name == node.name }
         if component
           attrs = node.attributes.dup
@@ -55,8 +57,6 @@ module Heartml
 
           node.replace(render_output)
         end
-
-        process_attribute_bindings(node)
       end
 
       fragment
