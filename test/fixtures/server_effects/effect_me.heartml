@@ -8,7 +8,9 @@
 
 <address server-effect="$classMap(.addressClasses); $styleMap(.addressStyles)">address</address>
 
-<custom-el server-effect="@items = .itemsObject" server-args="items: items_object"><em>Children.</em></custom-el>
+<custom-el server-effect="@items = .itemsObject" server-args="items: items_object"><em>Children.</em>
+  <tiny-el server-args="name: first_name"></tiny-el>
+</custom-el>
 
 <template server-children>
   Here's content! Yay! <template server-unsafe-eval>content</template>.

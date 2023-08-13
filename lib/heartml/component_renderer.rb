@@ -11,7 +11,9 @@ module Heartml
       inspect_html do |doc, resource|
         view_context = Bridgetown::ERBView.new(resource)
 
-        FragmentRenderComponent.new(body: doc.body, scope: resource).render_in(view_context, rendering_mode: node)
+        rdr = FragmentRenderComponent.new(body: doc.at_css("body"), scope: view_context)
+        rdr.define_singleton_method(:view_context) { view_context }
+        rdr.call
 
         # Heartml.registered_elements.each do |component|
         #   tag_name = component.tag_name

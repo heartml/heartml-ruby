@@ -446,7 +446,6 @@ if defined?(Bridgetown)
 
     Heartml.module_eval do
       def render_in(view_context, rendering_mode = :string, &block)
-        @attributes&.[]=("server-ignore", "")
         self.rendering_mode = rendering_mode
         super(view_context, &block)
       end

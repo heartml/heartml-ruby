@@ -46,9 +46,11 @@ module Heartml
 
           obj = component.new(**attrs)
           render_output = if obj.respond_to?(:render_in)
-                            obj.render_in(@component.view_context, rendering_mode: :node) { node.children }
+                            obj.render_in(@component.view_context, rendering_mode: :node) do
+                              process(fragamatize(node.children))
+                            end
                           else
-                            obj.render_element(content: node.children)
+                            obj.render_element(content: process(fragamatize(node.children)))
                           end
 
           node.replace(render_output)
@@ -56,6 +58,14 @@ module Heartml
 
         process_attribute_bindings(node)
       end
+
+      fragment
+    end
+
+    def fragamatize(node_set)
+      frag = Nokolexbor::DocumentFragment.new(@fragment.document)
+      node_set.each { |child| child.parent = frag }
+      frag
     end
 
     def process_attribute_bindings(node) # rubocop:todo Metrics
@@ -69,7 +79,6 @@ module Heartml
         end
       rescue Exception => e # rubocop:disable Lint/RescueException
         line_segments = [@component.class.heart_module, @component.class.line_number_of_node(attr_node)]
-        puts "here we go!"
         raise e.class, e.message.lines.first, [line_segments.join(":"), *e.backtrace]
       end
     end
