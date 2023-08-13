@@ -1,0 +1,99 @@
+<template>
+  <h3 :class="{ 'high-light': count == 10 }" v-text="count">0</h3>
+
+  <p><code v-text="`${person.name} ...:`"></code> <a :href="`mailto:${text}`" v-text="upcaseMe(text)"></a></p>
+
+  <button v-data="targets" v-bind:class="buttonClasses" @click="myButtonHandler">Click Me!!</button>
+
+  <template v-if="hydrated">
+    <p v-effect="toggleIt($el, store.count)">It's ALIVE!</p>
+    <p>{{ store.count }} <button @click="store.inc">increment</button></p>
+  </template>
+
+  <hr />
+
+  <ul>
+    <template v-for="(item, index) in items"
+      :key="[item.name, index]">
+      <li :class="{ 'high-light': item.name == 'xyz' }">
+        <blockquote>
+          <span v-text="index"></span>: Item! <strong><span v-text="text"></span> <span v-html="item.name"></span></strong>
+        </blockquote>
+        <ul>
+          <template v-for="(subitem, index2) in item.subitems" :key="[subitem.name, index2]">
+            <li :class="{ 'high-light': bigCount(count) }"><span v-text="index"></span> <span v-text="index2"></span>: <span v-text="subitem.name"></span></li>
+          </template>
+        </ul>
+      </li>
+    </template>
+  </ul>
+
+  <slot></slot>
+</template>
+
+<link rel="stylesheet" href="../_components_shared/common.css" server-process />
+<style>
+  :host {
+    display: block;
+    background: lemonchiffon;
+    padding: 2rem;
+  }
+</style>
+
+<script type="module">
+import { PetiteElement } from "petite-element"
+import PetiteHelpers from "../../frontend/javascript/petite-helpers.js"
+
+export class HydrateMeElement extends PetiteElement {
+  upcaseMe = PetiteHelpers.upcaseMe
+  store = PetiteHelpers.store
+
+  static setup = {
+    tagName: "hydrate-me",
+    template: import.meta.document,
+  }
+
+  static defineProps = {
+    count: {
+      type: Number,
+      attribute: "count",
+    },
+    text: {
+      type: String,
+      attribute: "te-xt",
+    },
+    items: {
+      type: Array,
+      default(rawProps) {
+        return ["bbe", "xyz"]
+      },
+      attribute: "items",
+    },
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    console.log("Yay, I'm attached!")
+  }
+
+  myButtonHandler(e) {
+    this.count++
+  }
+
+  get buttonClasses() {
+    return ["foo", "bar"]
+  }
+
+  get person() {
+    return {
+      name: "Sherlock"
+    }
+  }
+
+  toggleIt($el, value) {
+    $el.classList.toggle('high-light', value % 2)
+  }
+}
+
+HydrateMeElement.define()
+</script>

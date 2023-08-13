@@ -1,0 +1,3 @@
+<p>Woo hoo! <template server-unsafe-eval>items.length</template> items.</p>
+
+<template server-unsafe-eval>content</template>

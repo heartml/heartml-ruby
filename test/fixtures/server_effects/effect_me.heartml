@@ -1,0 +1,15 @@
+<p iso-effect="@textContent = .firstName">First Name</p>
+
+<p iso-effect="@innerHTML = .lastName; @ariaLabel = .labelName">Last Name</p>
+
+<aside server-effect="moreInfo(.firstName)">more info</aside>
+
+<output server-effect="$hide(.bye)">I am hidden</output>
+
+<address server-effect="$classMap(.addressClasses); $styleMap(.addressStyles)">address</address>
+
+<custom-el server-effect="@items = .itemsObject" server-args="items: items_object"><em>Children.</em></custom-el>
+
+<template server-children>
+  Here's content! Yay! <template server-unsafe-eval>content</template>.
+</template>

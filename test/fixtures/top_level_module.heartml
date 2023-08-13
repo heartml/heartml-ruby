@@ -1,0 +1,24 @@
+<p>I'm a paragraph.</p>
+
+<script type="module">
+  // script!
+</script>
+
+<section>
+  <article>
+    <header>
+      <h1>I'm a header</h1>
+    </header>
+  </article>
+</section>
+
+<link rel="stylesheet" href="styles/external.css" server-process>
+<link rel="stylesheet" href="styles/keep.css">
+
+<style>
+  h1 {
+    color: red;
+  }
+</style>
+
+<blockquote>And a blockquote!</blockquote>

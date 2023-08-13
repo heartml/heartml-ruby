@@ -1,0 +1,25 @@
+<template>
+  <section>
+    <article>
+      <header>
+        <h1 iso-effect="@textContent = .name">Name</h1>
+      </header>
+      <template ruby:erb>
+        Hello <output><%= "world".upcase %>!</output>
+      </template>
+      <section ruby:erb>
+        <% @var = 123 %>
+        <%= @var + 100 %>
+      </section>
+      <footer server-effect="@innerHTML = .footer"></footer>
+    </article>
+  </section>
+</template>
+
+<style>
+  article {
+    & h1 {
+      color: red;
+    }
+  }
+</style>
