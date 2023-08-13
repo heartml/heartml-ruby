@@ -13,15 +13,16 @@ jobs:
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
-        ruby:
-          - '3.1.0'
-
+        ruby_version: [3.0.5, 3.1.3, 3.2.0]
+    env:
+      BUNDLE_JOBS: 3
+      BUNDLE_PATH: "vendor/bundle"
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-        bundler-cache: false # not sure why true is failing
+        bundler-cache: true
     - name: Run the default task
       run: bundle exec rake
