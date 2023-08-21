@@ -5,9 +5,17 @@ require "test_helper"
 class TestServerEffects < Minitest::Test
   # rubocop:disable Layout/LineLength
   def test_effect_me
-    htmlmod = EffectMe.new(first_name: "Ja<em>re<em>d", last_name: "Wh<em>it</em>e")
-    results = htmlmod.render_element(content: "Neato").to_html
+    context = {
+      last_name: "Wh<em>it</em>e"
+    }.with_dot_access
 
+    renderer = Heartml::TemplateRenderer.new(body: <<~HTML, context: context)
+      <effect-me first-name="Ja&lt;em&gt;re&lt;em&gt;d" aria-label="Labeled" server-args="last_name">Neato</effect-me>
+    HTML
+
+    results = renderer.().to_html
+
+    assert_includes results, %(aria-label="LABELED")
     assert_includes results, %(>Ja&lt;em&gt;re&lt;em&gt;d</p>)
     assert_includes results, %(>Wh<em>it</em>e</p>)
     assert_includes results, %(aria-label="Last Name")

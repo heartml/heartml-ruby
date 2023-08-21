@@ -12,15 +12,18 @@ class EffectMe
 
   camelcased attr_reader :first_name, :last_name
 
-  def initialize(first_name:, last_name:)
+  def initialize(first_name:, last_name:, **attributes)
     @first_name = first_name
     @last_name = last_name
+    @attributes = attributes
   end
 
   def attributes
     {
       first_name: first_name,
-      last_name: last_name
+      last_name: last_name,
+      **@attributes,
+      aria_label: @attributes[:aria_label].upcase
     }
   end
 
