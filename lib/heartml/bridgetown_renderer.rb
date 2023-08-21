@@ -6,12 +6,11 @@ module Heartml
       render_heart_modules
     end
 
-    # TODO: rework this using new server effects and component context!
     def render_heart_modules
       inspect_html do |doc, resource|
         view_context = Bridgetown::ERBView.new(resource)
 
-        rdr = TemplateComponent.new(body: doc.at_css("body"), context: view_context)
+        rdr = Heartml::TemplateRenderer.new(body: doc.at_css("body"), context: view_context)
         #        rdr.define_singleton_method(:view_context) { view_context }
         rdr.call
       end
