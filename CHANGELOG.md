@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.0.0.beta4] - 2023-08-27
+
+- Refactor and improve Bridgetown plugin and simplify context handling for template rendering
+
 ## [1.0.0.beta3] - 2023-08-12
 
 - Ensure attributes are processed on component node before it's rendered as component
