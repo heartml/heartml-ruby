@@ -149,6 +149,14 @@ module Heartml
     @_replaced_content = new_content
   end
 
+  def context
+    return @context if @context
+
+    return unless respond_to?(:view_context)
+
+    view_context # compatibility with other Ruby component systems
+  end
+
   # Override in component
   #
   # @return [Hash]
@@ -165,9 +173,10 @@ module Heartml
 
   # @param attributes [Hash]
   # @param content [String, Nokolexbor::Element]
-  def render_element(attributes: self.attributes, content: self.content) # rubocop:disable Metrics
+  def render_element(attributes: self.attributes, content: self.content, context: self.context) # rubocop:disable Metrics
     doc = self.class.doc.clone
     @_content = content
+    @context = context
 
     tmpl_el = doc.css("> template").find do |node|
       node.attributes.empty? ||
@@ -183,33 +192,6 @@ module Heartml
 
     # Process all the template bits
     process_fragment(tmpl_el)
-
-    # Heartml.registered_elements.each do |component|
-    #   tmpl_el.children[0].css(component.tag_name).reverse.each do |node|
-    #     if node["server-ignore"]
-    #       node.remove_attribute("server-ignore")
-    #       next
-    #     end
-
-    #     attrs = node.attributes.transform_values(&:value)
-    #     attrs.reject! { |k| k.start_with?("server-") }
-    #     new_attrs = {}
-    #     attrs.each do |k, v|
-    #       next unless k.start_with?("arg:")
-
-    #       new_key = k.delete_prefix("arg:")
-    #       attrs.delete(k)
-    #       new_attrs[new_key] = instance_eval(v, self.class.heart_module, self.class.line_number_of_node(node))
-    #     end
-    #     attrs.merge!(new_attrs)
-    #     attrs.transform_keys!(&:to_sym)
-
-    #     new_node = node.replace(
-    #       component.new(**attrs).render_element(content: node.children)
-    #     )
-    #     new_node.remove_attribute("server-ignore")
-    #   end
-    # end
 
     # Set attributes on the custom element
     attributes.each { |k, v| doc[k.to_s.tr("_", "-")] = value_to_attribute(v) if v }
@@ -381,26 +363,6 @@ module Heartml
     end
   end
 
-  # def _server_replace_binding(attribute:, node:)
-  #   if node.name == "template"
-  #     node.children[0].inner_html = node_or_string(evaluate_attribute_expression(attribute))
-  #     node.replace(node.children[0].children)
-  #   else
-  #     node.inner_html = node_or_string(evaluate_attribute_expression(attribute))
-  #     node.replace(node.children)
-  #   end
-  # end
-
-  # def _server_expr_binding(attribute:, node:)
-  #   if attribute.name.end_with?(":text")
-  #     node.content = node_or_string(evaluate_attribute_expression(attribute))
-  #     attribute.parent.delete(attribute.name)
-  #   elsif attribute.name.end_with?(":html")
-  #     node.inner_html = node_or_string(evaluate_attribute_expression(attribute))
-  #     attribute.parent.delete(attribute.name)
-  #   end
-  # end
-
   class ServerComponent
     def self.inherited(klass)
       super
@@ -409,7 +371,7 @@ module Heartml
     end
   end
 
-  class FragmentRenderComponent < ServerComponent
+  class TemplateRenderer < ServerComponent
     def self.heart_module
       "eval"
     end
@@ -419,9 +381,9 @@ module Heartml
       0
     end
 
-    def initialize(body:, scope:) # rubocop:disable Lint/MissingSuper
+    def initialize(body:, context:) # rubocop:disable Lint/MissingSuper
       @body = body.is_a?(String) ? Nokolexbor::DocumentFragment.parse(body) : body
-      @scope = scope
+      @context = context
     end
 
     def call
@@ -430,36 +392,14 @@ module Heartml
     end
 
     def respond_to_missing?(key)
-      @scope.respond_to?(key)
+      context.respond_to?(key)
     end
 
     # TODO: delegate instead?
     def method_missing(key, *args, **kwargs)
-      @scope.send(key, *args, **kwargs)
+      context.send(key, *args, **kwargs)
     end
   end
 end
 
-if defined?(Bridgetown)
-  Bridgetown.initializer :heartml do |config|
-    Bridgetown::Component.extend ActiveSupport::DescendantsTracker
-
-    Heartml.module_eval do
-      def render_in(view_context, rendering_mode = :string, &block)
-        self.rendering_mode = rendering_mode
-        super(view_context, &block)
-      end
-    end
-
-    # Eager load all components
-    config.hook :site, :after_reset do |site|
-      unless site.config.eager_load_paths.find { _1.end_with?(site.config.components_dir) }
-        site.config.eager_load_paths << site.config.autoload_paths.find { _1.end_with?(site.config.components_dir) }
-      end
-    end
-
-    config.html_inspector_parser "nokolexbor"
-    require_relative "heartml/component_renderer"
-    config.builder Heartml::ComponentRenderer
-  end
-end
+require_relative "heartml/bridgetown_renderer" if defined?(Bridgetown)

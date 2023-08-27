@@ -38,21 +38,25 @@ module Heartml
 
             params.each do |param|
               new_key, v2 = param.split(":").map(&:strip)
+              v2 = new_key unless v2
+
               new_attrs[new_key] = @component.evaluate_attribute_expression(attr, v2)
             end
             attrs.delete(k)
           end
           attrs.merge!(new_attrs)
           attrs.reject! { |k| k.start_with?("server-") || k.start_with?("iso-") || k.start_with?("host-") }
-          attrs.transform_keys!(&:to_sym)
+          attrs.transform_keys! { _1.tr("-", "_").to_sym }
 
           obj = component.new(**attrs)
           render_output = if obj.respond_to?(:render_in)
-                            obj.render_in(@component.view_context, rendering_mode: :node) do
+                            obj.render_in(@component.context, rendering_mode: :node) do
                               process(fragamatize(node.children))
                             end
                           else
-                            obj.render_element(content: process(fragamatize(node.children)))
+                            obj.render_element(
+                              content: process(fragamatize(node.children)), context: @component.context
+                            )
                           end
 
           node.replace(render_output)
