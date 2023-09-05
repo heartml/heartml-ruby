@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [1.0.0.beta5] - 2023-09-04
+
+- Fix issue with ViewComponent in Rails apps
+- Add fragment error handling
+
 ## [1.0.0.beta4] - 2023-08-27
 
 - Refactor and improve Bridgetown plugin and simplify context handling for template rendering

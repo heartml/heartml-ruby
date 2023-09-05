@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heartml (1.0.0.beta4)
+    heartml (1.0.0.beta5)
       concurrent-ruby (~> 1.2)
       nokolexbor (>= 0.4.2)
 
