@@ -38,7 +38,7 @@ module Heartml
 
             params.each do |param|
               new_key, v2 = param.split(":").map(&:strip)
-              v2 = new_key unless v2
+              v2 ||= new_key
 
               new_attrs[new_key] = @component.evaluate_attribute_expression(attr, v2)
             end
@@ -82,7 +82,7 @@ module Heartml
           break unless attribute_binding.method.(attribute: attr_node, node: node)
         end
       rescue Exception => e # rubocop:disable Lint/RescueException
-        line_segments = [@component.class.heart_module, @component.class.line_number_of_node(attr_node)]
+        line_segments = [@component.class.heart_module, @component._line_number_of_node(attr_node)]
         raise e.class, e.message.lines.first, [line_segments.join(":"), *e.backtrace]
       end
     end

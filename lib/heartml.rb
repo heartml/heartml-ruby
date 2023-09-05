@@ -54,9 +54,13 @@ module Heartml
     klass.attribute_binding "server-unsafe-eval", :_server_replace_binding
 
     # Don't stomp on a superclass's `content` method
-    return if klass.instance_methods.include?(:content)
+    has_content_method = begin
+      klass.instance_method(:content)
+    rescue NameError
+      false
+    end
 
-    klass.include ContentMethod
+    klass.include ContentMethod unless has_content_method
   end
 
   # Extends the component class
@@ -124,10 +128,8 @@ module Heartml
       end
     end
 
-    def line_number_of_node(node)
-      loc = node.source_location
-      instance_variable_get(:@doc_html)[0..loc].count("\n") + 1
-    end
+    # @return [String]
+    def doc_html = @doc_html
 
     def attribute_bindings = @attribute_bindings ||= []
 
@@ -175,6 +177,7 @@ module Heartml
   # @param content [String, Nokolexbor::Element]
   def render_element(attributes: self.attributes, content: self.content, context: self.context) # rubocop:disable Metrics
     doc = self.class.doc.clone
+    @doc_html ||= self.class.doc_html # keep a spare copy for determining error line number
     @_content = content
     @context = context
 
@@ -305,7 +308,7 @@ module Heartml
     _context_locals.keys.reverse_each do |name|
       eval_code = "#{name} = _context_locals[\"#{name}\"];" + eval_code
     end
-    instance_eval(eval_code, self.class.heart_module, self.class.line_number_of_node(attribute))
+    instance_eval(eval_code, self.class.heart_module, _line_number_of_node(attribute))
   end
 
   def class_list_for(obj)
@@ -318,6 +321,11 @@ module Heartml
     else
       Array[obj]
     end.join(" ")
+  end
+
+  def _line_number_of_node(node)
+    loc = node.source_location
+    instance_variable_get(:@doc_html)[0..loc].count("\n") + 1
   end
 
   def _context_nodes = @_context_nodes ||= []
@@ -376,12 +384,8 @@ module Heartml
       "eval"
     end
 
-    def self.line_number_of_node(_node)
-      # FIXME: this should actually work!
-      0
-    end
-
     def initialize(body:, context:) # rubocop:disable Lint/MissingSuper
+      @doc_html = body.is_a?(String) ? body : body.to_html
       @body = body.is_a?(String) ? Nokolexbor::DocumentFragment.parse(body) : body
       @context = context
     end
