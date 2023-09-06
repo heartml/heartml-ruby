@@ -1,1 +1,1 @@
-<p server-effect="@textContent = .name">Name</p>
+<p server-effect="@textContent = .fullName">Name</p>

@@ -7,9 +7,14 @@ class TinyEl < Heartml::ServerComponent
 
   define "tiny-el", shadow_root: false
 
-  attr_reader :name
+  attr_reader :name, :last_name
 
-  def initialize(name:) # rubocop:disable Lint/MissingSuper
+  def initialize(name:, last_name:) # rubocop:disable Lint/MissingSuper
     @name = name
+    @last_name = last_name
+  end
+
+  camelcased def full_name
+    "#{name} #{last_name}"
   end
 end

@@ -3,6 +3,7 @@
 class EffectMe
   include Heartml
   include Heartml::ServerEffects
+  include LastNameDirective
 
   def self.source_location
     File.expand_path("effect_me.heartml", __dir__)

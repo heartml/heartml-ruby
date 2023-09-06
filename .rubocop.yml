@@ -18,6 +18,9 @@ Style/Documentation:
 Style/LambdaCall:
   Enabled: false
 
+Style/Lambda:
+  Enabled: false
+
 Style/ParallelAssignment:
   Enabled: false
 

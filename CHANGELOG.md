@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.0.0.beta6] - 2023-09-06
+
+- Improvements to directives syntax (use lambda argument instead of block)
+
 ## [1.0.0.beta5] - 2023-09-04
 
 - Fix issue with ViewComponent in Rails apps

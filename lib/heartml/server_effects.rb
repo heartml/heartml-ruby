@@ -28,9 +28,9 @@ module Heartml
     Nokolexbor::Element.include JSPropertyAliases unless Nokolexbor::Element.instance_methods.include?(:textContent=)
 
     module ClassMethods
-      def directive(name, &block)
+      def directive(name, function)
         @directives ||= {}
-        @directives[name.to_s] = block
+        @directives[name.to_s] = function
       end
     end
 
@@ -45,19 +45,15 @@ module Heartml
       klass.extend ClassMethods
 
       klass.class_eval do
-        directive :show do |_, element, value|
-          element["hidden"] = "" unless value
-        end
+        directive :show, ->(_, node, value) { node["hidden"] = "" unless value }
 
-        directive :hide do |_, element, value|
-          element["hidden"] = "" if value
-        end
+        directive :hide, ->(_, node, value) { node["hidden"] = "" if value }
 
-        directive :classMap do |_, element, obj|
+        directive :classMap, ->(_, node, obj) {
           obj.each do |k, v|
-            element.add_class k.to_s if v
+            node.add_class k.to_s if v
           end
-        end
+        }
       end
     end
 
@@ -70,7 +66,7 @@ module Heartml
       syntax = attribute.value
       statements = syntax.split(";").map(&:strip)
 
-      statements.each do |statement| # rubocop:disable Metrics
+      statements.each do |statement|
         if statement.start_with?("@")
           # property assignment
           expression = statement.split("=").map(&:strip)
@@ -86,13 +82,7 @@ module Heartml
           arg_strs.unshift("@")
 
           if self.class.directives[directive_name.strip[1..]]
-            args = arg_strs.map do |arg_str|
-              next node if arg_str == "@"
-
-              next arg_str[1...-1] if arg_str.start_with?("'") # string literal
-
-              send(arg_str[1..])
-            end
+            args = arg_strs.map { _convert_effect_arg_to_value _1, node }
 
             self.class.directives[directive_name.strip[1..]]&.(self, *args)
           end
@@ -102,19 +92,25 @@ module Heartml
           arg_strs = args_str.split(",").map(&:strip)
           arg_strs.unshift("@")
 
-          args = arg_strs.map do |arg_str|
-            next node if arg_str == "@"
-
-            next arg_str[1...-1] if arg_str.start_with?("'") # string literal
-
-            send(arg_str[1..])
-          end
+          args = arg_strs.map { _convert_effect_arg_to_value _1, node }
 
           send(method_name.strip, *args)
         end
 
         attribute.name = "host-effect"
       end
+    end
+
+    def _convert_effect_arg_to_value(arg_str, node)
+      return node if arg_str == "@"
+
+      return arg_str[1...-1] if arg_str.start_with?("'") # string literal
+
+      if arg_str.match(/^[0-9]/)
+        return arg_str.include?(".") ? arg_str.to_f : arg_str.to_i
+      end
+
+      send(arg_str[1..])
     end
   end
 end
