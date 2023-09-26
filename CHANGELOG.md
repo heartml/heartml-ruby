@@ -1,4 +1,10 @@
+# Changelog
+
 ## [Unreleased]
+
+## [1.0.0.beta7] - 2023-09-25
+
+- Add Railtie for Heartml component support in Rails
 
 ## [1.0.0.beta6] - 2023-09-06
 

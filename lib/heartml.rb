@@ -407,3 +407,4 @@ module Heartml
 end
 
 require_relative "heartml/bridgetown_renderer" if defined?(Bridgetown)
+require_relative "heartml/railtie" if defined?(Rails::Railtie)
