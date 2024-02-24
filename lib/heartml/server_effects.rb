@@ -36,7 +36,7 @@ module Heartml
 
     # @param klass [Class]
     # @return [void]
-    def self.included(klass) # rubocop:disable Metrics
+    def self.included_extras(klass) # rubocop:disable Metrics
       klass.attribute_binding "server-effect", :_server_effect_binding
       klass.attribute_binding "iso-effect", :_iso_effect_binding
 
@@ -58,7 +58,7 @@ module Heartml
     end
 
     def _server_effect_binding(attribute:, node:)
-      _iso_effect_binding(attribute: attribute, node: node)
+      _iso_effect_binding(attribute:, node:)
       node.remove_attribute "host-effect"
     end
 

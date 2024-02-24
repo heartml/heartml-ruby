@@ -13,9 +13,9 @@ module Heartml
     # NOTE: for some reason, the traverse method yields node children first, then the
     # parent node. That doesn't work for our case. We want to go strictly in source order.
     # So this is our own implementation of that.
-    def traverse(node, &block)
+    def traverse(node, &block) # rubocop:disable Style/ArgumentsForwarding
       yield(node)
-      node.children.each { |child| traverse(child, &block) }
+      node.children.each { |child| traverse(child, &block) } # rubocop:disable Style/ArgumentsForwarding
     end
 
     def process(fragment = @fragment) # rubocop:disable Metrics
@@ -79,7 +79,7 @@ module Heartml
           next unless attribute_binding.matcher.match?(name)
           next if attribute_binding.method.receiver._check_stack(node)
 
-          break unless attribute_binding.method.(attribute: attr_node, node: node)
+          break unless attribute_binding.method.(attribute: attr_node, node:)
         end
       rescue Exception => e # rubocop:disable Lint/RescueException
         line_segments = [@component.class.heart_module, @component._line_number_of_node(attr_node)]

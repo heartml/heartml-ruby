@@ -1,19 +1,13 @@
 # frozen_string_literal: true
 
-class EffectMe
-  include Heartml
-  include Heartml::ServerEffects
+class EffectMe < Heartml::ServerComponent
   include LastNameDirective
-
-  def self.source_location
-    File.expand_path("effect_me.heartml", __dir__)
-  end
 
   define "effect-me"
 
   camelcased attr_reader :first_name, :last_name
 
-  def initialize(first_name:, last_name:, **attributes)
+  def initialize(first_name:, last_name:, **attributes) # rubocop:disable Lint/MissingSuper
     @first_name = first_name
     @last_name = last_name
     @attributes = attributes
@@ -21,8 +15,8 @@ class EffectMe
 
   def attributes
     {
-      first_name: first_name,
-      last_name: last_name,
+      first_name:,
+      last_name:,
       **@attributes,
       aria_label: @attributes[:aria_label].upcase
     }

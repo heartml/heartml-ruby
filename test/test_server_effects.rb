@@ -9,7 +9,7 @@ class TestServerEffects < Minitest::Test
       last_name: "Wh<em>it</em>e"
     }.with_dot_access
 
-    renderer = Heartml::TemplateRenderer.new(body: <<~HTML, context: context)
+    renderer = Heartml::TemplateRenderer.new(body: <<~HTML, context:)
       <effect-me first-name="Ja&lt;em&gt;re&lt;em&gt;d" aria-label="Labeled" server-args="last_name">Neato</effect-me>
     HTML
 
@@ -26,4 +26,14 @@ class TestServerEffects < Minitest::Test
     assert_includes results, "<p>Woo hoo! 2 items.</p><em>Children.</em>\n  <tiny-el><p>Ja&lt;em&gt;re&lt;em&gt;d Wh&lt;em&gt;it&lt;/em&gt;e</p></tiny-el>\n</custom-el></template>\n  Here's content! Yay! Neato.\n</effect-me>"
   end
   # rubocop:enable Layout/LineLength
+
+  def test_tag_swap
+    renderer = Heartml::TemplateRenderer.new(body: <<~HTML, context: {})
+      <tag-swap heading="I'm a heading!" footnote="Powered by Heartml"><p>Yay!</p> <i>It works.</i></tag-swap>
+    HTML
+
+    results = renderer.().to_html
+
+    assert_equal TagSwap.output_compare, results.strip
+  end
 end

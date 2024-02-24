@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Server-rendered web components"
   spec.homepage = "https://github.com/heartml/heartml-ruby#readme"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.1"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/heartml/heartml-ruby"
@@ -29,6 +29,4 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "concurrent-ruby", "~> 1.2"
   spec.add_dependency "nokolexbor", ">= 0.4.2"
-
-  spec.add_development_dependency "hash_with_dot_access", "~> 1.2"
 end

@@ -46,7 +46,7 @@ class Templated < Heartml::ServerComponent
 
   def attributes
     {
-      name: name
+      name:
     }
   end
 
@@ -88,5 +88,36 @@ class Templated < Heartml::ServerComponent
       node.inner_html = result
       attribute.parent.delete(attribute.name)
     end
+  end
+end
+
+class TagSwap < Heartml::ServerComponent
+  def self.source_location
+    File.expand_path("tag_swap", __dir__)
+  end
+
+  define "tag-swap", shadow_root: false
+
+  output_tag_name "section"
+
+  attr_reader :heading, :footnote
+
+  def initialize(heading:, footnote:, **attrs) # rubocop:disable Lint/MissingSuper
+    @heading, @footnote = heading, footnote
+    @attrs = attrs
+  end
+
+  def attributes
+    {
+      **@attrs
+    }
+  end
+
+  def self.output_compare
+    <<~HTML.strip
+      <section><header>
+        <h1>I'm a heading!</h1>
+      </header><p>Yay!</p> <i>It works.</i><footer>Powered by Heartml</footer></section>
+    HTML
   end
 end

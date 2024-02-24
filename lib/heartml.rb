@@ -26,6 +26,8 @@ module Heartml
   require_relative "heartml/query_selection"
   require "heartml/server_effects"
 
+  include ServerEffects
+
   def self.registered_elements
     @registered_elements ||= Concurrent::Set.new
 
@@ -50,8 +52,9 @@ module Heartml
   def self.included(klass)
     klass.extend ClassMethods
 
-    klass.attribute_binding "server-children", :_server_children_binding, only: :template
-    klass.attribute_binding "server-unsafe-eval", :_server_replace_binding
+    klass.attribute_binding "server-children", :_server_children, only: :template
+    klass.attribute_binding "server-content", :_server_content, only: :template
+    klass.attribute_binding "server-unsafe-eval", :_server_unsafe_eval
 
     # Don't stomp on a superclass's `content` method
     has_content_method = begin
@@ -61,6 +64,8 @@ module Heartml
     end
 
     klass.include ContentMethod unless has_content_method
+
+    ServerEffects.included_extras(klass)
   end
 
   # Extends the component class
@@ -112,6 +117,8 @@ module Heartml
       end
     end
 
+    def output_tag_name(value = nil) = @output_tag_name ||= value
+
     # @param value [String]
     # @return [String]
     def heart_module(value = nil) = @heart_module ||= value
@@ -136,7 +143,7 @@ module Heartml
     def attribute_binding(matcher, method_name, only: nil)
       attribute_bindings << AttributeBinding.new(
         matcher: Regexp.new(matcher),
-        method_name: method_name,
+        method_name:,
         only_for_tag: only
       )
     end
@@ -247,7 +254,17 @@ module Heartml
       tmpl_el.remove
     end
 
-    rendering_mode == :node ? doc : doc.to_html
+    if self.class.output_tag_name
+      swap_doc = doc.document.create_element(self.class.output_tag_name)
+      doc.attrs.each do |attr, value|
+        swap_doc[attr] = value
+      end
+      swap_doc << doc.children
+
+      rendering_mode == :node ? swap_doc : swap_doc.to_html
+    else
+      rendering_mode == :node ? doc : doc.to_html
+    end
   end
 
   def call(...) = render_element(...)
@@ -319,7 +336,7 @@ module Heartml
       # TODO: handle objects inside of an array?
       obj
     else
-      Array[obj]
+      [obj]
     end.join(" ")
   end
 
@@ -353,12 +370,12 @@ module Heartml
     @_context_locals = previous_context
   end
 
-  def _server_children_binding(attribute:, node:) # rubocop:disable Lint/UnusedMethodArgument
+  def _server_children(attribute:, node:) # rubocop:disable Lint/UnusedMethodArgument
     self.replaced_content = node.children[0]
     node.remove
   end
 
-  def _server_replace_binding(attribute:, node:)
+  def _server_unsafe_eval(attribute:, node:)
     node_name = node.name
     correct_node = node_name == "template" ? node.children[0] : node
     result = node_or_string(evaluate_attribute_expression(attribute, correct_node.inner_html))
@@ -371,40 +388,12 @@ module Heartml
     end
   end
 
-  class ServerComponent
-    def self.inherited(klass)
-      super
-      klass.include Heartml
-      klass.include Heartml::ServerEffects
-    end
-  end
-
-  class TemplateRenderer < ServerComponent
-    def self.heart_module
-      "eval"
-    end
-
-    def initialize(body:, context:) # rubocop:disable Lint/MissingSuper
-      @doc_html = body.is_a?(String) ? body : body.to_html
-      @body = body.is_a?(String) ? Nokolexbor::DocumentFragment.parse(body) : body
-      @context = context
-    end
-
-    def call
-      Fragment.new(@body, self).process
-      @body
-    end
-
-    def respond_to_missing?(key)
-      context.respond_to?(key)
-    end
-
-    # TODO: delegate instead?
-    def method_missing(key, *args, **kwargs)
-      context.send(key, *args, **kwargs)
-    end
+  def _server_content(attribute:, node:)
+    result = evaluate_attribute_expression(attribute, "content")
+    node.swap(result)
   end
 end
 
+require_relative "heartml/template_renderer"
 require_relative "heartml/bridgetown_renderer" if defined?(Bridgetown)
 require_relative "heartml/railtie" if defined?(Rails::Railtie)

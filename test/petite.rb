@@ -21,8 +21,8 @@ module Heartml
       expression = node["v-for"].split(delimiter)
 
       process_list(
-        attribute: attribute,
-        node: node,
+        attribute:,
+        node:,
         item_node: node.children[0].first_element_child,
         for_in: expression
       )

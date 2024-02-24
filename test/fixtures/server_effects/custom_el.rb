@@ -1,25 +1,18 @@
 # frozen_string_literal: true
 
-class CustomEl
-  include Heartml
-  include Heartml::ServerEffects
-
-  def self.source_location
-    File.expand_path("custom_el.heartml", __dir__)
-  end
-
+class CustomEl < Heartml::ServerComponent
   define "custom-el", shadow_root: false
 
   attr_reader :items
 
-  def initialize(items:, **attributes)
+  def initialize(items:, **attributes) # rubocop:disable Lint/MissingSuper
     @items = items
     @attributes = attributes
   end
 
   def attributes
     {
-      items: items,
+      items:,
       **@attributes
     }
   end

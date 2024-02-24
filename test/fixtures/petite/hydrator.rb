@@ -7,7 +7,7 @@ module TestPetiteHelpers
   alias_method :upcaseMe, :upcase_me # rubocop:disable Style/Alias
 end
 
-require "heartml/petite"
+require_relative "../../petite"
 require "hash_with_dot_access"
 
 class Hydrator
@@ -36,9 +36,9 @@ class Hydrator
   def attributes
     {
       te_xt: text,
-      count: count,
-      items: items,
-      person: person
+      count:,
+      items:,
+      person:
     }
   end
 

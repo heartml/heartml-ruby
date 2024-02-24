@@ -1,0 +1,7 @@
+<header>
+  <h1 server-effect="@textContent = .heading">Heading</h1>
+</header>
+
+<template server-content></template>
+
+<footer server-effect="@textContent = .footnote"></footer>

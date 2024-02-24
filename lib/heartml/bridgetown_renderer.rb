@@ -11,7 +11,6 @@ module Heartml
         view_context = Bridgetown::ERBView.new(resource)
 
         rdr = Heartml::TemplateRenderer.new(body: doc.at_css("body"), context: view_context)
-        #        rdr.define_singleton_method(:view_context) { view_context }
         rdr.call
       end
     end
@@ -19,6 +18,7 @@ module Heartml
 end
 
 Bridgetown.initializer :heartml do |config|
+  # TODO: maybe we can ditch this once we're off ActiveSupport in Bridgetown
   Bridgetown::Component.extend ActiveSupport::DescendantsTracker
 
   Heartml.module_eval do

@@ -18,10 +18,10 @@ class TestHeartml < Minitest::Test
   end
 
   def test_registered_elements
-    assert_equal 6, Heartml.registered_elements.length
+    assert_equal 7, Heartml.registered_elements.length
     Object.send(:remove_const, :EffectMe)
-    assert_equal 5, Heartml.registered_elements.length
-    Kernel.load "fixtures/server_effects/effect_me.rb"
     assert_equal 6, Heartml.registered_elements.length
+    Kernel.load "fixtures/server_effects/effect_me.rb"
+    assert_equal 7, Heartml.registered_elements.length
   end
 end
