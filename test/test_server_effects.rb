@@ -10,12 +10,13 @@ class TestServerEffects < Minitest::Test
     }.with_dot_access
 
     renderer = Heartml::TemplateRenderer.new(body: <<~HTML, context:)
-      <effect-me first-name="Ja&lt;em&gt;re&lt;em&gt;d" aria-label="Labeled" server-args="last_name">Neato</effect-me>
+      <effect-me first-name="Ja&lt;em&gt;re&lt;em&gt;d" aria-label="Labeled" goo-bar="123" server-args="last_name">Neato</effect-me>
     HTML
 
     results = renderer.().to_html
 
-    assert_includes results, %(aria-label="LABELED")
+    assert_includes results, %(aria-label="LABELED" goo-bar="123")
+    refute_includes results, "globs="
     assert_includes results, %(>Ja&lt;em&gt;re&lt;em&gt;d</p>)
     assert_includes results, %(>Wh<em>it</em>e</p>)
     assert_includes results, %(aria-label="Last Name")

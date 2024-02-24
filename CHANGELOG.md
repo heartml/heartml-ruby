@@ -2,7 +2,11 @@
 
 ## [Unreleased]
 
-## [1.0.0.beta8] - 2023-09-25
+## [1.0.0.beta9] - 2023-02-24
+
+- Use `@attributes` by default
+
+## [1.0.0.beta8] - 2024-02-23
 
 - Simplify modules structure, add tag swap feature, other refactors
 - Bump min Ruby version to 3.1

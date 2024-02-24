@@ -8,7 +8,7 @@
 
 <address server-effect="$classMap(.addressClasses); $styleMap(.addressStyles)">address</address>
 
-<custom-el host-effect="@items = .itemsObject" server-args="items: items_object"><em>Children.</em>
+<custom-el server-args="items: items_object"><em>Children.</em>
   <tiny-el server-effect="$last_name(); @name = .first_name"></tiny-el>
 </custom-el>
 

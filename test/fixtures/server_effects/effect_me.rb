@@ -17,7 +17,8 @@ class EffectMe < Heartml::ServerComponent
     {
       first_name:,
       last_name:,
-      **@attributes,
+      globs: nil, # test nil values are filtered out
+      **super,
       aria_label: @attributes[:aria_label].upcase
     }
   end
@@ -38,7 +39,7 @@ class EffectMe < Heartml::ServerComponent
   end
 
   # rubocop:disable Naming/VariableNumber
-  camelcased def items_object
+  def items_object
     {
       item_1: ["string", true],
       item_2: [123, { checked: false }]

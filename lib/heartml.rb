@@ -166,10 +166,10 @@ module Heartml
     view_context # compatibility with other Ruby component systems
   end
 
-  # Override in component
+  # Override in component as needed
   #
   # @return [Hash]
-  def attributes = {}
+  def attributes = @attributes || {}
 
   def rendering_mode = @_rendering_mode || :node
 

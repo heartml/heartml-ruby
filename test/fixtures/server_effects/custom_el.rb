@@ -13,7 +13,7 @@ class CustomEl < Heartml::ServerComponent
   def attributes
     {
       items:,
-      **@attributes
+      **super
     }
   end
 end
