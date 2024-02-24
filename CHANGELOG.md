@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta8] - 2023-09-25
+
+- Simplify modules structure, add tag swap feature, other refactors
+- Bump min Ruby version to 3.1
+
 ## [1.0.0.beta7] - 2023-09-25
 
 - Add Railtie for Heartml component support in Rails

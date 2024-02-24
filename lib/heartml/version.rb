@@ -2,5 +2,5 @@
 
 module Heartml
   # @return [String]
-  VERSION = "1.0.0.beta7"
+  VERSION = "1.0.0.beta8"
 end
