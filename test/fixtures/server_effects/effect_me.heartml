@@ -1,6 +1,6 @@
 <p iso-effect="@textContent = .firstName">First Name</p>
 
-<p iso-effect="@innerHTML = .lastName; @ariaLabel = .labelName">Last Name</p>
+<p iso-effect="@innerHTML = .lastName; $attribute('aria-label', .labelName)">Last Name</p>
 
 <aside server-effect="moreInfo(.firstName)">more info</aside>
 

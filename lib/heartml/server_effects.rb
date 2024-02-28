@@ -54,6 +54,10 @@ module Heartml
             node.add_class k.to_s if v
           end
         }
+
+        directive :attribute, ->(_, node, name, value) {
+          node[name] = value
+        }
       end
     end
 
