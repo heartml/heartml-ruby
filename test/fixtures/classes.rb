@@ -60,7 +60,7 @@ class Templated < Heartml::ServerComponent
         <section>
           <article>
             <header>
-              <h1 host-effect="@textContent = .name">Thomas Anderson</h1>
+              <h1 host-lazy-effect="@textContent = .name">Thomas Anderson</h1>
             </header>
             Hello <output>WORLD!</output>
             <section>

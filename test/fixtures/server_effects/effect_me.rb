@@ -31,6 +31,8 @@ class EffectMe < Heartml::ServerComponent
 
   def bye = true
 
+  def disabled = false
+
   camelcased def address_classes
     {
       "foo-bar" => true,

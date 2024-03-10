@@ -56,29 +56,34 @@ module Heartml
         }
 
         directive :attribute, ->(_, node, name, value) {
-          node[name] = value
+          node[name] = value if name.match?(%r{^aria[A-Z-]}) || value
         }
       end
     end
 
     def _server_effect_binding(attribute:, node:)
       _iso_effect_binding(attribute:, node:)
-      node.remove_attribute "host-effect"
+      node.remove_attribute "host-lazy-effect"
     end
 
     def _iso_effect_binding(attribute:, node:) # rubocop:disable Metrics
       syntax = attribute.value
       statements = syntax.split(";").map(&:strip)
 
-      statements.each do |statement|
+      statements.each do |statement| # rubocop:disable Metrics
         if statement.start_with?("@")
           # property assignment
           expression = statement.split("=").map(&:strip)
           expression[0] = expression[0][1..]
 
           value = send(expression[1][1..])
+          attribute_value = if expression[0].match?(%r{^aria[A-Z-]}) && [true, false].include?(value)
+                              value
+                            else
+                              value_to_attribute(value)
+                            end
 
-          node.send("#{expression[0]}=", value_to_attribute(value))
+          node.send("#{expression[0]}=", attribute_value) unless attribute_value.nil?
         elsif statement.start_with?("$")
           # directive
           directive_name, args_str = statement.strip.match(/(.*)\((.*)\)/).captures
@@ -101,7 +106,7 @@ module Heartml
           send(method_name.strip, *args)
         end
 
-        attribute.name = "host-effect"
+        attribute.name = "host-lazy-effect"
       end
     end
 

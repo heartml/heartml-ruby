@@ -277,6 +277,8 @@ module Heartml
       val
     when TrueClass
       ""
+    when FalseClass
+      nil
     else
       val.to_json
     end

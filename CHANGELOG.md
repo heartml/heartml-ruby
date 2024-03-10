@@ -2,11 +2,15 @@
 
 ## [Unreleased]
 
-## [1.0.0.beta10] - 2023-02-27
+## [1.0.0.beta11] - 2024-03-10
+
+- Fix behavior of boolean values (`true/false` on aria attributes, `""`/missing otherwise)
+
+## [1.0.0.beta10] - 2024-02-27
 
 - Add the `$attribute` directive so iso effects will work
 
-## [1.0.0.beta9] - 2023-02-24
+## [1.0.0.beta9] - 2024-02-24
 
 - Use `@attributes` by default
 

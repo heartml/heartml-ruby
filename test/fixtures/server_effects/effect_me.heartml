@@ -2,7 +2,7 @@
 
 <p iso-effect="@innerHTML = .lastName; $attribute('aria-label', .labelName)">Last Name</p>
 
-<aside server-effect="moreInfo(.firstName)">more info</aside>
+<aside server-effect="moreInfo(.firstName); @disabled=.disabled">more info</aside>
 
 <output server-effect="$hide(.bye)">I am hidden</output>
 
