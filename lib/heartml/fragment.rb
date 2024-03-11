@@ -45,7 +45,7 @@ module Heartml
             attrs.delete(k)
           end
           attrs.merge!(new_attrs)
-          attrs.reject! { |k| k.start_with?("server-") || k.start_with?("iso-") || k.start_with?("host-") }
+          attrs.reject! { |k| k.start_with?("server-") || k.start_with?("iso-") }
           attrs.transform_keys! { _1.tr("-", "_").to_sym }
 
           obj = component.new(**attrs)

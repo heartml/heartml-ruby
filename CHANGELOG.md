@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta12] - 2024-03-10
+
+- Bugfix: shouldn't swallow `host-*` attributes for Ruby initializers
+
 ## [1.0.0.beta11] - 2024-03-10
 
 - Fix behavior of boolean values (`true/false` on aria attributes, `""`/missing otherwise)
