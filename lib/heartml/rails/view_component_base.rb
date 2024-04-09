@@ -16,6 +16,9 @@ module Heartml
 
       def render_template_for(*) = call
 
+      # No escaping required for the rendered HTML
+      def maybe_escape_html(input) = input
+
       module ClassMethods
         def compile(*)
           # no-op

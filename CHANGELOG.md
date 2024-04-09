@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta14] - 2024-04-08
+
+- Improve ViewComponent v3 compatibility
+
 ## [1.0.0.beta13] - 2024-04-08
 
 - Add final Rails & ViewComponent config
