@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta13] - 2024-04-08
+
+- Add final Rails & ViewComponent config
+
 ## [1.0.0.beta12] - 2024-03-10
 
 - Bugfix: shouldn't swallow `host-*` attributes for Ruby initializers

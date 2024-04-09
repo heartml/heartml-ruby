@@ -398,4 +398,4 @@ end
 
 require_relative "heartml/template_renderer"
 require_relative "heartml/bridgetown_renderer" if defined?(Bridgetown)
-require_relative "heartml/railtie" if defined?(Rails::Railtie)
+require_relative "heartml/rails/railtie" if defined?(Rails::Railtie)
