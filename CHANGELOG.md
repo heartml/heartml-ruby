@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta15] — 2024-04-11
+
+- Fix Fast Refresh crash in Bridgetown 2.0 alpha
+
 ## [1.0.0.beta14] - 2024-04-08
 
 - Improve ViewComponent v3 compatibility

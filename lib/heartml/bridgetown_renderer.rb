@@ -28,6 +28,10 @@ Bridgetown.initializer :heartml do |config|
     end
   end
 
+  Heartml::ClassMethods.module_eval do
+    def component_template_path = heart_module
+  end
+
   # Eager load all components
   config.hook :site, :after_reset do |site|
     unless site.config.eager_load_paths.find { _1.end_with?(site.config.components_dir) }
