@@ -2,6 +2,12 @@
 
 module Heartml
   class BridgetownRenderer < Bridgetown::Builder
+    # Called when a `Bridgetown::Component` includes `Heartml`, so we can bypass Bridgetown's
+    # normal component template handling
+    def self.component_overrides(klass)
+      klass.define_method(:template) { call }
+    end
+
     def build
       render_heart_modules
     end
@@ -18,9 +24,6 @@ module Heartml
 end
 
 Bridgetown.initializer :heartml do |config|
-  # TODO: maybe we can ditch this once we're off ActiveSupport in Bridgetown
-  Bridgetown::Component.extend ActiveSupport::DescendantsTracker
-
   Heartml.module_eval do
     def render_in(view_context, rendering_mode: :string, &block)
       self.rendering_mode = rendering_mode

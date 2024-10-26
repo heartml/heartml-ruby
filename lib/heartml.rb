@@ -66,6 +66,10 @@ module Heartml
     klass.include ContentMethod unless has_content_method
 
     ServerEffects.included_extras(klass)
+
+    return unless defined?(Bridgetown) && klass < Bridgetown::Component
+
+    BridgetownRenderer.component_overrides(klass)
   end
 
   # Extends the component class
