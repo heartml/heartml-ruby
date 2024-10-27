@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta17] — 2024-10-27
+
+- Add `.` effect shortcut for `@textContent = .`
+
 ## [1.0.0.beta16] — 2024-10-26
 
 - Fix rendering logic in Bridgetown 2.0 beta

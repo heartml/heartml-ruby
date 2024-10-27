@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "heartml"
 
 require "minitest/autorun"
+require "minitest/pride"
 
 module LastNameDirective
   def self.included(klass)

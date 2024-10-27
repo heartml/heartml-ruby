@@ -1,1 +1,1 @@
-<p server-effect="@textContent = .fullName; @ariaHidden = .hideme">Name</p>
+<p server-effect=".fullName; @ariaHidden = .hideme">Name</p>

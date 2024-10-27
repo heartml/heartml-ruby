@@ -71,6 +71,11 @@ module Heartml
       statements = syntax.split(";").map(&:strip)
 
       statements.each do |statement| # rubocop:disable Metrics
+        if statement.start_with?(".")
+          # shortcut for text content
+          statement = "@textContent=#{statement}"
+        end
+
         if statement.start_with?("@")
           # property assignment
           expression = statement.split("=").map(&:strip)
