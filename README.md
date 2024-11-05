@@ -1,8 +1,8 @@
-# Heartml: Ruby (WIP)
+# Heartml: Ruby Web Components (WIP)
 
-Server-rendered web components in Ruby using a SFC (Single-File Component) format loosely based on [HTML Modules](https://github.com/WICG/webcomponents/blob/gh-pages/proposals/html-modules-explainer.md). Logic on the server-side is analogous to client-side logic provided by the Heartml web component library written in JavaScript.
+Server-rendered custom elements in Ruby using a SFC (Single-File Component) format loosely based on [HTML Modules](https://github.com/WICG/webcomponents/blob/gh-pages/proposals/html-modules-explainer.md). Logic on the server-side is analogous to client-side logic provided by the [Heartml JavaScript library](https://github.com/heartml/heartml).
 
-Great for pairing with [esbuild-plugin-html-modules](https://github.com/hotmodule/esbuild-plugin-html-modules) for a full-stack component rendering pipeline.
+Great for pairing with [esbuild-plugin-html-modules](https://github.com/whitefusionhq/esbuild-plugin-html-modules) for a full-stack component rendering pipeline.
 
 ## Installation
 
