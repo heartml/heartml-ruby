@@ -58,6 +58,16 @@ module Heartml
         directive :attribute, ->(_, node, name, value) {
           node[name] = value if name.match?(%r{^aria[A-Z-]}) || value
         }
+
+        directive :appendUnsafe, ->(_, node, value) {
+          node.swap(value.is_a?(Nokolexbor::Node) ? value : value.to_s)
+        }
+
+        directive :append, ->(_, node, value) {
+          span = node.document.create_element("span")
+          span.content = value.to_s
+          node.swap(span.inner_html)
+        }
       end
     end
 

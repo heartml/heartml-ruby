@@ -1,3 +1,4 @@
+<template>
 <p iso-effect="@textContent = .firstName">First Name</p>
 
 <p iso-effect="@innerHTML = .lastName; $attribute('aria-label', .labelName)">Last Name</p>
@@ -11,7 +12,8 @@
 <custom-el server-args="items: items_object"><em>Children.</em>
   <tiny-el server-effect="$last_name(); @name = .first_name"></tiny-el>
 </custom-el>
+</template>
 
-<template server-children>
-  Here's content! Yay! <template server-unsafe-eval>content</template>.
+<template heartml-content>
+  Here's content! Yay! <heartml-slot></heartml-slot>.
 </template>

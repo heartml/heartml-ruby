@@ -1,3 +1,3 @@
-<p>Woo hoo! <template server-unsafe-eval>items.length</template> items.</p>
+<p>Woo hoo! <b><template server-effect="$append(.itemsLength)"></template></b> items.</p>
 
-<template server-content></template>
+<heartml-slot></heartml-slot>

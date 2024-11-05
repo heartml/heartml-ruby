@@ -52,9 +52,7 @@ module Heartml
   def self.included(klass)
     klass.extend ClassMethods
 
-    klass.attribute_binding "server-children", :_server_children, only: :template
-    klass.attribute_binding "server-content", :_server_content, only: :template
-    klass.attribute_binding "server-unsafe-eval", :_server_unsafe_eval
+    klass.attribute_binding "heartml-content", :_server_content, only: :template
 
     # Don't stomp on a superclass's `content` method
     has_content_method = begin
@@ -81,8 +79,6 @@ module Heartml
     end
 
     def html_file_extensions = %w[module.html mod.html heartml].freeze
-
-    def processed_css_extension = "css-local"
 
     # @param tag_name [String]
     # @param heart_module [String] if not provided, a class method called `source_location` must be
@@ -194,13 +190,20 @@ module Heartml
 
     tmpl_el = doc.css("> template").find do |node|
       node.attributes.empty? ||
-        (node.attributes.count == 1 && node.attributes.any? { |k| k[0].start_with?("data-") })
+        (node.attributes.count == 1 && node.attributes.any? { |k| k[0] == "data-ssr-only" })
     end
 
-    unless tmpl_el
+    if tmpl_el
+      # Hoist light DOM children templates, if need be
+      doc.css("> template[heartml-content]").each do |node|
+        tmpl_el.children[0] << node
+      end
+    else
+      # No top-level template, so we create one
       tmpl_el = doc.document.create_element("template")
       immediate_children = doc.css("> :not(style):not(script)")
       tmpl_el.children[0] << immediate_children
+      tmpl_el.children[0] << doc.css("> style[server-effect]")
       doc.prepend_child(tmpl_el)
     end
 
@@ -210,26 +213,8 @@ module Heartml
     # Set attributes on the custom element
     attributes.each { |k, v| doc[k.to_s.tr("_", "-")] = value_to_attribute(v) if v }
 
-    # Look for external and internal styles
-    output_styles = ""
-    external_styles = doc.css("link[rel=stylesheet]")
-    external_styles.each do |external_style|
-      next unless external_style["server-process"]
-
-      output_styles += File.read(File.expand_path(external_style["href"], File.dirname(self.class.heart_module)))
-      external_style.remove
-    rescue StandardError => e
-      raise e.class, e.message.lines.first,
-            ["#{self.class.heart_module}:#{external_style.line}", *e.backtrace]
-    end
-    sidecar_file = "#{File.join(
-      File.dirname(self.class.heart_module), File.basename(self.class.heart_module, ".*")
-    )}.#{self.class.processed_css_extension}"
-    output_styles += if File.exist?(sidecar_file)
-                       File.read(sidecar_file)
-                     else
-                       doc.css("> style:not([scope])").map(&:content).join
-                     end
+    # Look for internal styles
+    output_styles = doc.css("> style:not([scope])").map(&:content).join
 
     # Now remove all nodes *except* the template
     doc.children.each do |node|
@@ -248,10 +233,11 @@ module Heartml
       # Guess what? We can reuse the same template tag! =)
       tmpl_el["shadowrootmode"] = "open"
       tmpl_el.children[0] << style_tag if style_tag
+      child_content.at_css("heartml-slot")&.swap(content) if @_replaced_content.is_a?(Nokolexbor::Node) && content
       doc << child_content if child_content
     else
       tmpl_el.children[0] << style_tag if style_tag
-      tmpl_el.children[0].at_css("slot:not([name])")&.swap(child_content) if child_content
+      tmpl_el.children[0].at_css("heartml-slot")&.swap(child_content) if child_content
       tmpl_el.children[0].children.each do |node|
         doc << node
       end
@@ -376,27 +362,9 @@ module Heartml
     @_context_locals = previous_context
   end
 
-  def _server_children(attribute:, node:) # rubocop:disable Lint/UnusedMethodArgument
+  def _server_content(attribute:, node:) # rubocop:disable Lint/UnusedMethodArgument
     self.replaced_content = node.children[0]
     node.remove
-  end
-
-  def _server_unsafe_eval(attribute:, node:)
-    node_name = node.name
-    correct_node = node_name == "template" ? node.children[0] : node
-    result = node_or_string(evaluate_attribute_expression(attribute, correct_node.inner_html))
-
-    if node_name == "template"
-      node.swap(result)
-    else
-      node.inner_html = result
-      attribute.parent.delete(attribute.name)
-    end
-  end
-
-  def _server_content(attribute:, node:)
-    result = evaluate_attribute_expression(attribute, "content")
-    node.swap(result)
   end
 end
 

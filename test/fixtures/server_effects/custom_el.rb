@@ -10,6 +10,8 @@ class CustomEl < Heartml::ServerComponent
     @attributes = attributes
   end
 
+  camelcased def items_length = items.length
+
   def attributes
     {
       items:,
