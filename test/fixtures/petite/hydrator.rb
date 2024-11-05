@@ -23,6 +23,13 @@ class Hydrator
 
   attribute_binding "v-data", :data_binding
 
+  directive :load_css, ->(component, node) do
+    style_tag = node.document.create_element("style")
+    style_tag.content = File.read(File.expand_path(node[:href], File.dirname(component.class.heart_module)))
+    node.ancestors.last << style_tag
+    node.remove
+  end
+
   attr_reader :count, :items, :person, :foo
 
   def initialize(name:, text:, count:, items: [])
