@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta18] — 2024-11-27
+
+- Simplifications and improvements to server directive syntax and CSS handling [#1]
+
 ## [1.0.0.beta17] — 2024-10-27
 
 - Add `.` effect shortcut for `@textContent = .`
