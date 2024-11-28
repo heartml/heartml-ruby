@@ -5,9 +5,15 @@ require "erb"
 class TopLevel < Heartml::ServerComponent
   define "top-level", File.expand_path("top_level_module.heartml", __dir__)
 
+  directive :import_css, ->(component, node) do
+    node.content = File.read(File.expand_path(node[:src], File.dirname(component.class.heart_module)))
+    node.ancestors.last.prepend_child node
+  end
+
   # overridden processor
   def process_fragment(root)
     root.query_selector("article header > h1").content = "Pretty rad!"
+    super
   end
 
   def self.output_compare
@@ -54,7 +60,7 @@ class Templated < Heartml::ServerComponent
     "<small>Footer Content</small>"
   end
 
-  def self.output_compare
+  def self.output_compare # rubocop:disable Metrics
     <<~HTML.strip
       <templated-module name="Thomas Anderson"><template shadowrootmode="open">
         <section>
@@ -68,9 +74,12 @@ class Templated < Heartml::ServerComponent
             <footer><small>Footer Content</small></footer>
           </article>
         </section>
-      <style>article h1 {
-        color: green;
-      }
+      <style>
+        article {
+          & h1 {
+            color: red;
+          }
+        }
       </style></template></templated-module>
     HTML
   end

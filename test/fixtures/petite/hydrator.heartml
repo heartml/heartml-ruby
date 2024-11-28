@@ -1,4 +1,5 @@
 <template>
+  <link rel="stylesheet" href="../_components_shared/common.css" server-effect="$load_css()" />
   <h3 :class="{ 'high-light': count == 10 }" v-text="count">0</h3>
 
   <p><code v-text="`${person.name} ...:`"></code> <a :href="`mailto:${text}`" v-text="upcaseMe(text)"></a></p>
@@ -31,7 +32,6 @@
   <slot></slot>
 </template>
 
-<link rel="stylesheet" href="../_components_shared/common.css" server-process />
 <style>
   :host {
     display: block;
