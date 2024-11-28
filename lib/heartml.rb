@@ -52,7 +52,7 @@ module Heartml
   def self.included(klass)
     klass.extend ClassMethods
 
-    klass.attribute_binding "heartml-content", :_server_content, only: :template
+    klass.attribute_binding "hl-content", :_server_content, only: :template
 
     # Don't stomp on a superclass's `content` method
     has_content_method = begin
@@ -195,7 +195,7 @@ module Heartml
 
     if tmpl_el
       # Hoist light DOM children templates, if need be
-      doc.css("> template[heartml-content]").each do |node|
+      doc.css("> template[hl-content]").each do |node|
         tmpl_el.children[0] << node
       end
     else
@@ -233,11 +233,11 @@ module Heartml
       # Guess what? We can reuse the same template tag! =)
       tmpl_el["shadowrootmode"] = "open"
       tmpl_el.children[0] << style_tag if style_tag
-      child_content.at_css("heartml-slot")&.swap(content) if @_replaced_content.is_a?(Nokolexbor::Node) && content
+      child_content.at_css("hl-slot")&.swap(content) if @_replaced_content.is_a?(Nokolexbor::Node) && content
       doc << child_content if child_content
     else
       tmpl_el.children[0] << style_tag if style_tag
-      tmpl_el.children[0].at_css("heartml-slot")&.swap(child_content) if child_content
+      tmpl_el.children[0].at_css("hl-slot")&.swap(child_content) if child_content
       tmpl_el.children[0].children.each do |node|
         doc << node
       end
