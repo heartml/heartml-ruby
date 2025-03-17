@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.0.beta19] — 2025-03-16
+
+- Update to minimum support for ViewComponent 3.21.0 API
+
 ## [1.0.0.beta18] — 2024-11-27
 
 - Simplifications and improvements to server directive syntax and CSS handling [#1]

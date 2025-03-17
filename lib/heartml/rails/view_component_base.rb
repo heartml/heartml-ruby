@@ -28,13 +28,15 @@ module Heartml
 
         def inherited(klass)
           super(klass)
-          klass.source_location = caller_locations(1, 10).reject { |l| l.label == "inherited" }[0].path
-          klass.virtual_path = klass.source_location.gsub(
+          klass.identifier = caller_locations(1, 10).reject { |l| l.label == "inherited" }[0].path
+          klass.virtual_path = klass.identifier.gsub(
             %r{(.*#{Regexp.quote(ViewComponent::Base.config.view_component_path)})|(\.rb)}, ""
           )
           Heartml::ServerEffects.included_extras(klass)
           klass.directives.merge! directives
         end
+
+        def source_location = identifier
       end
     end
   end
